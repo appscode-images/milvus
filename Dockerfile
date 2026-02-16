@@ -13,6 +13,9 @@ RUN chown -R 1000:1000 /milvus/bin /milvus/lib && \
 # Allow 'Others' (user 1000) to traverse (enter) the configs folder
 RUN chmod o+rx /milvus/configs
 
+RUN mkdir -p /var/lib/milvus/data /var/lib/milvus/logs && \
+    chown -R 1000:1000 /var/lib/milvus/data /var/lib/milvus/logs
+
 # Switch to non-root user
 USER 1000:1000
 
