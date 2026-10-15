@@ -1,6 +1,7 @@
 # Use official image as base
 ARG MILVUS_VERSION=2.6.7
-FROM milvusdb/milvus:v${MILVUS_VERSION}
+ARG VARIANT=""
+FROM milvusdb/milvus:v${MILVUS_VERSION}${VARIANT}
 
 # Run as root for the user/permission setup below; base images >= 3.0 default to USER milvus
 USER 0:0
@@ -28,6 +29,11 @@ RUN chmod o+rx /milvus/configs
 
 RUN mkdir -p /var/lib/milvus/data /var/lib/milvus/logs && \
     chown -R 1000:1000 /var/lib/milvus/data /var/lib/milvus/logs
+
+# The operator's SR-IOV init container reads the secondary interface's IP with `ip`.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends iproute2 && \
+    rm -rf /var/lib/apt/lists/*
 
 # Switch to non-root user
 USER 1000:1000
